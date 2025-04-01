@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATCH=${1//*\//}
+PATCH="$1"
 
 if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   SRC_PATCH_COMMAND="patch -d $(git rev-parse --show-toplevel) -p1"
@@ -12,6 +12,9 @@ fi
 
 # Optional, clean repository before applying new patch
 ${SRC_CHECKOUT_COMMAND}
+
+# Extract numeric ID from potential comment URL
+PATCH=$(echo "$PATCH" | grep -oE '[0-9]+' | head -n 1)
 
 if [[ "${PATCH}" =~ ^[0-9]+$ ]]; then
   echo "Applying Gitea pull request patch"
